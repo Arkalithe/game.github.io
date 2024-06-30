@@ -12,9 +12,10 @@ let player = {
   y: 0, //poition inital
   vy: 0, // Vitesse Verticale
   isJumping: false, // Etat du saut
+  doubleJump: true, // Etat du double jump
   jumpPower: 10,
   gravity: 0.3,
-  rotation: 0 
+  rotation: 0,
 };
 
 //Fonction pour redimensionner le canvas
@@ -35,9 +36,12 @@ let keys = {};
 
 document.addEventListener("keydown", (e) => {
   keys[e.key] = true;
-  if (e.key === " " && !player.isJumping) {
+  if (e.key === " " && (player.isJumping === false || player.doubleJump)) {
     player.vy = -player.jumpPower;
     player.isJumping = true;
+    if (player.doubleJump && player.y < canvas.height - player.height - 10) {
+      player.doubleJump = false;
+    }
   }
 });
 
@@ -62,7 +66,8 @@ function update() {
   if (player.y + player.height > canvas.height) {
     player.y = canvas.height - player.height;
     player.vy = 0;
-    player.isJumping = false;
+    player.isJumping = false; 
+    player.doubleJump = true; //Reinitialise la possibilité du double jump
     player.rotation = 0;
   } else {
     player.rotation += 0.1;
