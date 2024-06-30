@@ -4,13 +4,25 @@ const ctx = canvas.getContext("2d");
 
 //Variable du jeu
 let player = {
-  x: canvas.width / 2,
-  y: canvas.height - 30,
+
   width: 50,
   height: 50,
   color: 'blue',
-  speed: 5
+  speed: 5,
+  x: 0,
+  y: 0
 };
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth * 0.9;
+    canvas.height = window.innerHeight * 0.9;
+
+    player.x = canvas.width / 2 - player.width / 2;
+    player.y = canvas.height / - player.height - 10;
+};
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
 let keys = {};
 
