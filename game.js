@@ -18,7 +18,7 @@ function resizeCanvas() {
     canvas.height = window.innerHeight * 0.9;
 
     player.x = canvas.width / 2 - player.width / 2;
-    player.y = canvas.height / - player.height - 10;
+    player.y = canvas.height - player.height - 10;
 };
 
 window.addEventListener('resize', resizeCanvas);
