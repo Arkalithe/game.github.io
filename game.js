@@ -35,7 +35,7 @@ let keys = {};
 //Event listener pour les impute utilisateur
 
 document.addEventListener("keydown", (e) => {
-  keys[e.key] = true;
+  keys[e.key.toLocaleLowerCase()] = true;
   if (e.key === " " && (player.isJumping === false || player.doubleJump)) {
     player.vy = -player.jumpPower;
     player.isJumping = true;
@@ -46,15 +46,15 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keyup", (e) => {
-  keys[e.key] = false;
+  keys[e.key.toLocaleLowerCase()] = false;
 });
 
 //Fonction pour mettre a jour les objet du jeu
 function update() {
-  if (keys["ArrowLeft"] && player.x > 0) {
+  if (keys["q"] && player.x > 0) {
     player.x -= player.speed;
   }
-  if (keys["ArrowRight"] && player.x < canvas.width - player.width) {
+  if (keys["d"] && player.x < canvas.width - player.width) {
     player.x += player.speed;
   }
 
