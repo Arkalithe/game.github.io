@@ -9,7 +9,7 @@ let player = {
   width: 50,
   height: 50,
   color: 'blue',
-  speed: 5,
+  speed: 5
 };
 
 let keys = {};
@@ -25,20 +25,21 @@ document.addEventListener("keyup", (e) => {
 
 //Fonction pour mettre a jour les objet du jeu
 function update() {
-  if (keys["d"] && player.x > 0) {
+  if (keys["ArrowLeft"] && player.x > 0) {
     player.x -= player.speed;
   }
-  if (keys["q"] && player.x > 0) {
+  if (keys["ArrowRight"] && player.x < canvas.width - player.width) {
     player.x += player.speed;
   }
 };
 
 //Fonction pour afficher les objet du jeux
 function render() {
-  ctx.clearReact(0, 0, canvas.width, canvas, height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = player.color;
   ctx.fillRect(player.x, player.y, player.width, player.height);
 };
+
 //Fonction Boucle du jeux
 function gameLoop() {
   update();
