@@ -13,7 +13,8 @@ let player = {
   vy: 0, // Vitesse Verticale
   isJumping: false, // Etat du saut
   jumpPower: 10,
-  gravity: 1,
+  gravity: 0.3,
+  rotation: 0 
 };
 
 //Fonction pour redimensionner le canvas
@@ -62,14 +63,30 @@ function update() {
     player.y = canvas.height - player.height;
     player.vy = 0;
     player.isJumping = false;
+    player.rotation = 0;
+  } else {
+    player.rotation += 0.1;
   }
 }
 
 //Fonction pour afficher les objet du jeux
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  //Sauvegarde du context
+  ctx.save();
+
+  // deplacement du context joueure pour rotation
+  ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
+  ctx.rotate(player.rotation);
+  ctx.translate(-player.width / 2, -player.height / 2);
+
+  // apparence du joueur
   ctx.fillStyle = player.color;
-  ctx.fillRect(player.x, player.y, player.width, player.height);
+  ctx.fillRect(0, 0, player.width, player.height);
+
+  //restaurarion du ontext
+  ctx.restore();
 }
 
 //Fonction Boucle du jeux
