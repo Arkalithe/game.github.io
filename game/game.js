@@ -4,6 +4,7 @@ const ctx = canvas.getContext('2d');
 let player;
 let enemy;
 let projectiles = [];
+let isGameOver = false;
 
 function resizeCanvas() {
     canvas.width = window.innerWidth * 0.9;
@@ -28,7 +29,7 @@ function update() {
     projectiles.forEach((projectile, index) => {
         projectile.update();
         if (projectile.x > canvas.width) {
-            projectiles.splice(index, 1); // Retire le projectile s'il sort de l'écran
+            projectiles.splice(index, 1);
         }
     });
 }
@@ -36,28 +37,46 @@ function update() {
 function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     player.render(ctx);
+    player.renderHP(ctx);
     enemy.render(ctx);
 
     projectiles.forEach(projectile => projectile.render(ctx));
 }
 
+function detectCollisions() {
+    projectiles.forEach((projectile, index) => {
+        if (projectile.x < player.x + player.width &&
+            projectile.x + projectile.width > player.x &&
+            projectile.y < player.y + player.height &&
+            projectile.y + projectile.height > player.y) {
+            projectiles.splice(index, 1);
+            player.hp -= 1;
+            if (player.hp <= 0) {
+                gameOver();
+            }
+        }
+    });
+}
+function gameOver() {
+    isGameOver = true;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'black';
+    ctx.font = '48px serif';
+    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+    cancelAnimationFrame(animationFrameId);
+
+}
+
+let animationFrameId;
+
 function gameLoop() {
     update();
     render();
-    requestAnimationFrame(gameLoop);
+    detectCollisions();
+    if (!isGameOver) {
+        animationFrameId = requestAnimationFrame(gameLoop);
+    }
 }
 
 gameLoop();
 
-setInterval(() => {
-    // Ajoute un projectile tiré par l'ennemi toutes les 2 secondes
-    const projectile = new Projectile(
-        enemy.x + enemy.width,
-        enemy.y + enemy.height / 2 - 5,
-        10,
-        10,
-        'red',
-        5
-    );
-    projectiles.push(projectile);
-}, 2000);
