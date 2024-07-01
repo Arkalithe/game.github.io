@@ -15,7 +15,7 @@ class Player {
     this.hp = 3;
   }
 
-  updatePosition(keys, canvasWidth, canvasHeight) {
+  updatePosition(keys, canvasWidth, canvasHeight, walls) {
     if (keys["q"] && this.x > 0) {
       this.x -= this.speed;
     }
@@ -26,6 +26,24 @@ class Player {
     this.vy += this.gravity;
     this.y += this.vy;
 
+    walls.forEach((wall) => {
+      if (wall.checkCollision(this)) {
+        if (this.vy > 0 && this.y + this.height - this.vy <= wall.y) {
+          this.y = wall.y - this.height;
+          this.vy = 0;
+          this.isJumping = false;
+          this.canDoubleJump = true;
+        } else if (this.y < wall.y + wall.height && this.vy < 0) {
+          this.y = wall.y + wall.height;
+          this.vy = 0;
+        } else if (this.x < wall.x) {
+          this.x = wall.x - this.width;
+        } else {
+          this.x = wall.x + wall.width;
+        }
+      }
+    });
+
     if (this.y + this.height > canvasHeight) {
       this.y = canvasHeight - this.height;
       this.vy = 0;
@@ -34,6 +52,28 @@ class Player {
       this.rotation = 0;
     } else {
       this.rotation += 0.1;
+    }
+  }
+
+  checkCollision(enemy) {
+    if (
+      this.x < enemy.x + enemy.width &&
+      this.x + this.width > enemy.x &&
+      this.y < enemy.y + enemy.height &&
+      this.y + this.height > enemy.y
+    ) {
+      if (this.y + this.height - this.vy <= enemy.y) {
+        this.y = enemy.y - this.height;
+        this.vy = 0;
+        this.isJumping = false;
+        this.canDoubleJump = true;
+      } else {
+        if (this.x < enemy.x) {
+          this.x = enemy.x - this.width;
+        } else {
+          this.x = enemy.x + enemy.width;
+        }
+      }
     }
   }
 
@@ -57,5 +97,4 @@ class Player {
     ctx.fillStyle = "green";
     ctx.fillRect(hpBarX, hpbarY, (this.hp / 3) * hpBarWidth, hpBarHeight);
   }
-  
 }

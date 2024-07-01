@@ -17,14 +17,15 @@ class Projectile {
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }
+
 setInterval(() => {
-    const projectile = new Projectile(
-        enemy.x + enemy.width,
-        enemy.y + enemy.height / 2 - 5,
-        10,
-        10,
-        'red',
-        5
-    );
-    projectiles.push(projectile);
+  const projectile = new Projectile(
+    enemy.x + enemy.width,
+    enemy.y + enemy.height / 2 - 5,
+    10,
+    10,
+    "red",
+    5
+  );
+  projectiles.push(projectile);
 }, 2000);
