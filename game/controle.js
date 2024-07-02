@@ -1,6 +1,5 @@
 let keys = {};
 
-// Écoute l'événement de pression d'une touche
 document.addEventListener("keydown", (e) => {
   keys[e.key.toLowerCase()] = true;
   // Gestion du saut et du double saut
@@ -15,9 +14,12 @@ document.addEventListener("keydown", (e) => {
   if (e.key.toLowerCase() === "r" && isGameOver) {
     restartGame();
   }
+  // Gestion de la fin du niveau en appuyant sur 'E' si le joueur est proche du portail
+  if (e.key.toLowerCase() === "e" && player.isNear(portal)) {
+    endLevel();
+  }
 });
 
-// Écoute l'événement de relâchement d'une touche
 document.addEventListener("keyup", (e) => {
   keys[e.key.toLowerCase()] = false;
 });

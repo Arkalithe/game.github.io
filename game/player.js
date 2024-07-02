@@ -13,10 +13,10 @@ class Player extends GameObject {
 
   updatePosition(keys, canvasWidth, canvasHeight, walls) {
     // Gestion des déplacements horizontaux
-    if (keys["q"] && this.x > 0) {
+    if (keys["q"]) {
       this.x -= this.speed;
     }
-    if (keys["d"] && this.x < canvasWidth - this.width) {
+    if (keys["d"]) {
       this.x += this.speed;
     }
 
@@ -51,7 +51,7 @@ class Player extends GameObject {
       }
     });
 
-    // Vérification des collisions avec les limites du canvas
+    // Vérification des collisions avec les limites du canvas en hauteur uniquement
     if (this.y + this.height > canvasHeight) {
       this.y = canvasHeight - this.height;
       this.vy = 0;

@@ -6,6 +6,8 @@ let enemy;
 let wall;
 let projectiles = [];
 let isGameOver = false;
+let scrollOffset = 0; // Offset de défilement horizontal
+let portal; // Déclaration du portail
 
 // Redimensionne le canvas et initialise les objets du jeu
 function resizeCanvas() {
@@ -15,11 +17,14 @@ function resizeCanvas() {
     player = new Player(canvas.width, canvas.height);
     enemy = new Enemy(canvas.width, canvas.height);
     wall = new Wall(canvas.width, canvas.height);
+    portal = new Portal(canvas.width * 2, canvas.height - 100); // Position et taille agrandie du portail
   } else {
     player.x = canvas.width / 2 - player.width / 2;
     player.y = canvas.height - player.height - 10;
     enemy.x = canvas.width / 4 - enemy.width / 2;
     enemy.y = canvas.height - enemy.height - 10;
+    portal.x = canvas.width * 2;
+    portal.y = canvas.height - portal.height - 10;
   }
 }
 
@@ -30,7 +35,7 @@ resizeCanvas();
 // Met à jour l'état du jeu
 function update() {
   if (!isGameOver) {
-    player.updatePosition(keys, canvas.width, canvas.height, [wall, enemy]);
+    player.updatePosition(keys, canvas.width, canvas.height, [wall, enemy, portal]);
     projectiles.forEach((projectile, index) => {
       projectile.update();
       // Si le projectile sort du canvas ou entre en collision avec un mur, il est supprimé
@@ -39,20 +44,44 @@ function update() {
       }
     });
     detectCollisions(); // Détecte les collisions entre les projectiles et le joueur
+    handleScrolling(); // Gère le défilement horizontal
+  }
+}
+
+// Gère le défilement horizontal du jeu
+function handleScrolling() {
+  if (player.x > canvas.width * 0.7 + scrollOffset) {
+    scrollOffset = player.x - canvas.width * 0.7;
+  } else if (player.x < canvas.width * 0.3 + scrollOffset && scrollOffset > 0) {
+    scrollOffset = player.x - canvas.width * 0.3;
   }
 }
 
 // Affiche les éléments du jeu
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Efface le canvas
+  ctx.save();
+  ctx.translate(-scrollOffset, 0); // Applique le défilement horizontal
   player.render(ctx); // Affiche le joueur
   player.renderHP(ctx); // Affiche la barre de vie du joueur
   enemy.render(ctx); // Affiche l'ennemi
   wall.render(ctx); // Affiche le mur
+  portal.render(ctx); // Affiche le portail
   projectiles.forEach((projectile) => projectile.render(ctx)); // Affiche les projectiles
+  ctx.restore();
+  if (player.isNear(portal)) {
+    renderPortalMessage(); // Affiche le message si le joueur est proche du portail
+  }
   if (isGameOver) {
     renderGameOver(); // Affiche le message Game Over si le jeu est terminé
   }
+}
+
+// Affiche le message lorsque le joueur est proche du portail
+function renderPortalMessage() {
+  ctx.fillStyle = "black"; // Couleur du texte
+  ctx.font = "24px serif"; // Police du texte
+  ctx.fillText("Appuyez sur 'E' pour terminer le niveau", canvas.width / 2 - 150, canvas.height / 2 - 50); // Affiche le texte au centre du canvas
 }
 
 // Détecte les collisions entre les projectiles et le joueur
@@ -83,15 +112,27 @@ function renderGameOver() {
   ctx.fillText("Appuyez sur 'R' pour redémarrer", canvas.width / 2 - 150, canvas.height / 2 + 40); // Affiche le texte en dessous du message Game Over
 }
 
+// Terminer le niveau et afficher le message de fin de niveau
+function endLevel() {
+  isGameOver = true; // Indique que le niveau est terminé
+  cancelAnimationFrame(animationFrameId); // Arrête la boucle du jeu
+  ctx.fillStyle = "black"; // Couleur du texte
+  ctx.font = "48px serif"; // Police du texte
+  ctx.fillText("Niveau Terminé!", canvas.width / 2 - 150, canvas.height / 2); // Affiche le texte au centre du canvas
+}
+
 // Redémarre le jeu
 function restartGame() {
   isGameOver = false; // Réinitialise l'état du jeu
+  scrollOffset = 0; // Réinitialise le défilement horizontal
   player = new Player(canvas.width, canvas.height); // Réinitialise le joueur
   enemy = new Enemy(canvas.width, canvas.height); // Réinitialise l'ennemi
   wall = new Wall(canvas.width, canvas.height); // Réinitialise le mur
+  portal = new Portal(canvas.width * 2, canvas.height - 100); // Réinitialise le portail
   projectiles = []; // Vide la liste des projectiles
   gameLoop(); // Relance la boucle du jeu
 }
+
 
 let animationFrameId;
 

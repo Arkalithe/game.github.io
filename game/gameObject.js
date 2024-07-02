@@ -22,4 +22,14 @@ class GameObject {
       this.y + this.height > other.y
     );
   }
+
+  // Vérifie la proximité avec un autre objet
+  isNear(other, proximity = 50) {
+    return (
+      this.x < other.x + other.width + proximity &&
+      this.x + this.width > other.x - proximity &&
+      this.y < other.y + other.height + proximity &&
+      this.y + this.height > other.y - proximity
+    );
+  }
 }
