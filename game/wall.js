@@ -1,17 +1,10 @@
-class Wall {
+class Wall extends GameObject {
   constructor(canvasWidth, canvasHeight) {
-    this.width = 50;
-    this.height = 100;
-    this.color = "green";
-    this.x = canvasWidth / 1.5 - this.width / 1;
-    this.y = canvasHeight - this.height;
+    // Initialisation du mur
+    super(canvasWidth / 1.5 - 25, canvasHeight - 100, 50, 100, "yellow");
   }
 
-  render(ctx) {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-  }
-
+  // Vérifie la collision avec une entité
   checkCollision(entity) {
     return (
       entity.x < this.x + this.width &&

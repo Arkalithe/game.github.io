@@ -1,5 +1,6 @@
 let keys = {};
 
+// Gestionnaire d'événements pour les touches pressées
 document.addEventListener("keydown", (e) => {
   keys[e.key.toLowerCase()] = true;
   if (e.key === " " && (player.isJumping === false || player.canDoubleJump)) {
@@ -11,6 +12,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// Gestionnaire d'événements pour les touches relâchées
 document.addEventListener("keyup", (e) => {
   keys[e.key.toLowerCase()] = false;
 });

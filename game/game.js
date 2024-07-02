@@ -26,61 +26,74 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 function update() {
-  player.updatePosition(keys, canvas.width, canvas.height, [wall]);
-  player.checkCollision(enemy);
-
-  projectiles.forEach((projectile, index) => {
-    projectile.update();
-    if (projectile.x > canvas.width || wall.checkCollision(projectile)) {
-      projectiles.splice(index, 1);
-    }
-  });
+  if (!isGameOver) {
+    player.updatePosition(keys, canvas.width, canvas.height, [wall, enemy]);
+    projectiles.forEach((projectile, index) => {
+      projectile.update();
+      // Si le projectile sort du canvas ou entre en collision avec un mur, il est supprimé
+      if (projectile.x > canvas.width || wall.checkCollision(projectile)) {
+        projectiles.splice(index, 1);
+      }
+    });
+    detectCollisions(); // Détecte les collisions entre les projectiles et le joueur
+  }
 }
 
 function render() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  player.render(ctx);
-  player.renderHP(ctx);
-  enemy.render(ctx);
-  wall.render(ctx);
-  projectiles.forEach((projectile) => projectile.render(ctx));
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Efface le canvas
+  player.render(ctx); // Affiche le joueur
+  player.renderHP(ctx); // Affiche la barre de vie du joueur
+  enemy.render(ctx); // Affiche l'ennemi
+  wall.render(ctx); // Affiche le mur
+  projectiles.forEach((projectile) => projectile.render(ctx)); // Affiche les projectiles
+  if (isGameOver) {
+    renderGameOver(); // Affiche le message Game Over si le jeu est terminé
+  }
 }
 
 function detectCollisions() {
   projectiles.forEach((projectile, index) => {
-    if (
-      projectile.x < player.x + player.width &&
-      projectile.x + projectile.width > player.x &&
-      projectile.y < player.y + player.height &&
-      projectile.y + projectile.height > player.y
-    ) {
-      projectiles.splice(index, 1);
-      player.hp -= 1;
+    if (projectile.checkCollision(player)) {
+      projectiles.splice(index, 1); // Supprime le projectile en collision
+      player.hp -= 1; // Réduit les points de vie du joueur
       if (player.hp <= 0) {
-        gameOver();
+        gameOver(); // Termine le jeu si les points de vie sont à zéro
       }
     }
   });
 }
 
 function gameOver() {
-  isGameOver = true;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "black";
-  ctx.font = "48px serif";
-  ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2);
-  cancelAnimationFrame(animationFrameId);
+  isGameOver = true; // Indique que le jeu est terminé
+  cancelAnimationFrame(animationFrameId); // Arrête la boucle du jeu
+}
+
+function renderGameOver() {
+  ctx.fillStyle = "black"; // Couleur du texte
+  ctx.font = "48px serif"; // Police du texte
+  ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2); // Affiche le texte au centre du canvas
 }
 
 let animationFrameId;
 
 function gameLoop() {
-  update();
-  render();
-  detectCollisions();
+  update(); // Met à jour l'état du jeu
+  render(); // Affiche le jeu
   if (!isGameOver) {
-    animationFrameId = requestAnimationFrame(gameLoop);
+    animationFrameId = requestAnimationFrame(gameLoop); // Continue la boucle du jeu si ce n'est pas terminé
   }
 }
 
-gameLoop();
+// Tir des projectiles par l'ennemi toutes les 2 secondes
+setInterval(() => {
+  if (!isGameOver) {
+    const projectile = new Projectile(
+      enemy.x + enemy.width,
+      enemy.y + enemy.height / 2 - 5,
+      5
+    );
+    projectiles.push(projectile);
+  }
+}, 2000);
+
+gameLoop(); // Démarre la boucle du jeu
