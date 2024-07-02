@@ -1,8 +1,9 @@
 let keys = {};
 
-// Gestionnaire d'événements pour les touches pressées
+// Écoute l'événement de pression d'une touche
 document.addEventListener("keydown", (e) => {
   keys[e.key.toLowerCase()] = true;
+  // Gestion du saut et du double saut
   if (e.key === " " && (player.isJumping === false || player.canDoubleJump)) {
     player.vy = -player.jumpPower;
     player.isJumping = true;
@@ -10,9 +11,13 @@ document.addEventListener("keydown", (e) => {
       player.canDoubleJump = false;
     }
   }
+  // Gestion du redémarrage du jeu en appuyant sur 'R'
+  if (e.key.toLowerCase() === "r" && isGameOver) {
+    restartGame();
+  }
 });
 
-// Gestionnaire d'événements pour les touches relâchées
+// Écoute l'événement de relâchement d'une touche
 document.addEventListener("keyup", (e) => {
   keys[e.key.toLowerCase()] = false;
 });

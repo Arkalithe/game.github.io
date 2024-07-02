@@ -7,6 +7,7 @@ let wall;
 let projectiles = [];
 let isGameOver = false;
 
+// Redimensionne le canvas et initialise les objets du jeu
 function resizeCanvas() {
   canvas.width = window.innerWidth * 0.9;
   canvas.height = window.innerHeight * 0.9;
@@ -22,9 +23,11 @@ function resizeCanvas() {
   }
 }
 
+// Écoute les changements de taille de la fenêtre pour redimensionner le canvas
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
+// Met à jour l'état du jeu
 function update() {
   if (!isGameOver) {
     player.updatePosition(keys, canvas.width, canvas.height, [wall, enemy]);
@@ -39,6 +42,7 @@ function update() {
   }
 }
 
+// Affiche les éléments du jeu
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Efface le canvas
   player.render(ctx); // Affiche le joueur
@@ -51,6 +55,7 @@ function render() {
   }
 }
 
+// Détecte les collisions entre les projectiles et le joueur
 function detectCollisions() {
   projectiles.forEach((projectile, index) => {
     if (projectile.checkCollision(player)) {
@@ -63,19 +68,34 @@ function detectCollisions() {
   });
 }
 
+// Termine le jeu en cas de game over
 function gameOver() {
   isGameOver = true; // Indique que le jeu est terminé
   cancelAnimationFrame(animationFrameId); // Arrête la boucle du jeu
 }
 
+// Affiche le message de game over et l'instruction de redémarrage
 function renderGameOver() {
   ctx.fillStyle = "black"; // Couleur du texte
   ctx.font = "48px serif"; // Police du texte
   ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2); // Affiche le texte au centre du canvas
+  ctx.font = "24px serif"; // Police du texte pour l'instruction de redémarrage
+  ctx.fillText("Appuyez sur 'R' pour redémarrer", canvas.width / 2 - 150, canvas.height / 2 + 40); // Affiche le texte en dessous du message Game Over
+}
+
+// Redémarre le jeu
+function restartGame() {
+  isGameOver = false; // Réinitialise l'état du jeu
+  player = new Player(canvas.width, canvas.height); // Réinitialise le joueur
+  enemy = new Enemy(canvas.width, canvas.height); // Réinitialise l'ennemi
+  wall = new Wall(canvas.width, canvas.height); // Réinitialise le mur
+  projectiles = []; // Vide la liste des projectiles
+  gameLoop(); // Relance la boucle du jeu
 }
 
 let animationFrameId;
 
+// Boucle principale du jeu
 function gameLoop() {
   update(); // Met à jour l'état du jeu
   render(); // Affiche le jeu
