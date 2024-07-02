@@ -6,7 +6,8 @@ class Player extends GameObject {
     this.gravity = 0.3; // Gravité appliquée au joueur
     this.vy = 0; // Vitesse verticale
     this.isJumping = false; // Indique si le joueur est en train de sauter
-    this.canDoubleJump = false; // Indique si le joueur peut faire un double saut
+    this.maxJumps = 2; // Autorise le double saut
+    this.jumpCount = 0; // Compteur pour les sauts
     this.rotation = 0; // Rotation du joueur pour l'animation
     this.hp = 3; // Points de vie du joueur
   }
@@ -34,7 +35,7 @@ class Player extends GameObject {
           this.y = wall.y - this.height;
           this.vy = 0;
           this.isJumping = false;
-          this.canDoubleJump = false;
+          this.jumpCount = 0; // Réinitialise le compteur de sauts
           isOnGround = true;
         } else if (this.vy < 0 && this.y >= wall.y + wall.height) {
           // Collision par le haut
@@ -56,7 +57,7 @@ class Player extends GameObject {
       this.y = canvasHeight - this.height;
       this.vy = 0;
       this.isJumping = false;
-      this.canDoubleJump = false;
+      this.jumpCount = 0; // Réinitialise le compteur de sauts
       this.rotation = 0;
       isOnGround = true;
     } else if (this.y + this.height === canvasHeight) {
@@ -65,7 +66,6 @@ class Player extends GameObject {
 
     if (!isOnGround) {
       this.isJumping = true;
-      this.canDoubleJump = true;
       this.rotation += 0.1; // Ajout de la rotation pour l'animation
     } else {
       this.rotation = 0; // Réinitialisation de la rotation quand le joueur est au sol
