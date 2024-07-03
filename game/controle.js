@@ -26,8 +26,8 @@ export class Controle {
       window.restartGame();
     }
 
-    // Gestion de la fin du niveau en appuyant sur 'E' si le joueur est proche du portail
-    if (e.key.toLowerCase() === "e" && this.player && this.portal && this.player.isNear(this.portal)) {
+    // Gestion de la fin du niveau en appuyant sur 'E' si le joueur est à l'intérieur du portail
+    if (e.key.toLowerCase() === "e" && this.player && this.portal && this.player.isInside(this.portal)) {
       window.endLevel();
     }
   }

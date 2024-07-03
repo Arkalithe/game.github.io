@@ -32,4 +32,14 @@ export class GameObject {
       this.y + this.height > other.y - proximity
     );
   }
+
+  // Vérifie si cet objet est à l'intérieur d'un autre objet
+  isInside(other) {
+    return (
+      this.x >= other.x &&
+      this.x + this.width <= other.x + other.width &&
+      this.y >= other.y &&
+      this.y + this.height <= other.y + other.height
+    );
+  }
 }

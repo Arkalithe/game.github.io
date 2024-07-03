@@ -1,3 +1,5 @@
+// game.js
+
 import { Player } from './player.js';
 import { Enemy } from './enemy.js';
 import { initializeWalls } from './wall.js';
@@ -37,7 +39,8 @@ resizeCanvas();
 // Met à jour l'état du jeu
 function update() {
   if (!isGameOver) {
-    player.updatePosition(keys, canvas.width, canvas.height, [...walls, enemy, portal]);
+    // Retirer le portail de la liste des objets à vérifier pour les collisions
+    player.updatePosition(keys, canvas.width, canvas.height, [...walls, enemy]);
     projectiles.forEach((projectile, index) => {
       projectile.update();
       if (projectile.x > canvas.width || walls.some(wall => wall.checkCollision(projectile))) {
@@ -63,12 +66,12 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
   ctx.translate(-scrollOffset, 0);
-  player.render(ctx);
-  player.renderHP(ctx);
   enemy.render(ctx);
   portal.render(ctx);
   walls.forEach(wall => wall.render(ctx));
   projectiles.forEach(projectile => projectile.render(ctx));
+  player.render(ctx);
+  player.renderHP(ctx);
   ctx.restore();
   if (player.isNear(portal)) {
     renderPortalMessage();
@@ -121,6 +124,9 @@ export function endLevel() {
   ctx.font = "48px serif";
   ctx.fillText("Niveau Terminé!", canvas.width / 2 - 150, canvas.height / 2);
 }
+
+// Attache endLevel à l'objet window
+window.endLevel = endLevel;
 
 // Redémarre le jeu
 export function restartGame() {
