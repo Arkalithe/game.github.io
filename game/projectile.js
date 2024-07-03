@@ -1,11 +1,13 @@
-class Projectile extends GameObject {
+import { GameObject } from './gameObject.js';
+
+export class Projectile extends GameObject {
   constructor(x, y, speed) {
-    // Initialisation du projectile
     super(x, y, 10, 10, "red");
     this.speed = speed; // Vitesse du projectile
   }
 
+  // Met à jour la position du projectile
   update() {
-    this.x += this.speed; // Déplacement horizontal du projectile
+    this.x += this.speed;
   }
 }

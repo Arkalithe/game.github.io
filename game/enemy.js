@@ -1,6 +1,7 @@
-class Enemy extends GameObject {
+import { GameObject } from './gameObject.js';
+
+export class Enemy extends GameObject {
   constructor(canvasWidth, canvasHeight) {
-    // Initialisation de l'ennemi
-    super(canvasWidth / 4 - 25, canvasHeight - 60, 50, 50, "green");
+    super(canvasWidth / 4 - 25, canvasHeight - 50, 50, 50, "green");
   }
 }

@@ -1,4 +1,4 @@
-class GameObject {
+export class GameObject {
   constructor(x, y, width, height, color) {
     this.x = x; // Position X de l'objet
     this.y = y; // Position Y de l'objet

@@ -1,6 +1,8 @@
-class Player extends GameObject {
+import { GameObject } from './gameObject.js';
+
+export class Player extends GameObject {
   constructor(canvasWidth, canvasHeight, color = "blue") {
-    super(canvasWidth / 2 - 25, canvasHeight - 60, 50, 50, color);
+    super(canvasWidth / 2 -800, canvasHeight - 60, 50, 50, color);
     this.speed = 5; // Vitesse de déplacement du joueur
     this.jumpPower = 6; // Puissance du saut
     this.gravity = 0.3; // Gravité appliquée au joueur
@@ -12,7 +14,12 @@ class Player extends GameObject {
     this.hp = 3; // Points de vie du joueur
   }
 
+  // Met à jour la position du joueur
   updatePosition(keys, canvasWidth, canvasHeight, walls) {
+    // Sauvegarde la position précédente
+    let prevX = this.x;
+    let prevY = this.y;
+
     // Gestion des déplacements horizontaux
     if (keys["q"]) {
       this.x -= this.speed;
@@ -26,28 +33,38 @@ class Player extends GameObject {
     this.y += this.vy;
 
     let isOnGround = false; // Variable pour vérifier si le joueur est au sol
+    let hitCeiling = false; // Variable pour vérifier si le joueur touche le plafond
 
     // Vérification des collisions avec les murs
     walls.forEach((wall) => {
       if (this.checkCollision(wall)) {
-        if (this.vy > 0 && this.y + this.height - this.vy <= wall.y) {
+        // Vérification des collisions verticales
+        if (prevY + this.height <= wall.y && this.vy > 0) {
           // Collision par le bas (atterrissage sur le mur)
           this.y = wall.y - this.height;
           this.vy = 0;
           this.isJumping = false;
           this.jumpCount = 0; // Réinitialise le compteur de sauts
           isOnGround = true;
-        } else if (this.vy < 0 && this.y >= wall.y + wall.height) {
+        } else if (prevY >= wall.y + wall.height && this.vy < 0) {
           // Collision par le haut
           this.y = wall.y + wall.height;
           this.vy = 0;
-        } else if (this.x + this.width > wall.x && this.x < wall.x + wall.width) {
-          // Collision par le côté
-          if (this.x < wall.x) {
-            this.x = wall.x - this.width;
-          } else {
-            this.x = wall.x + wall.width;
-          }
+          hitCeiling = true;
+        }
+      }
+    });
+
+    // Re-vérification des collisions pour ajuster la position horizontale
+    walls.forEach((wall) => {
+      if (this.checkCollision(wall)) {
+        // Vérification des collisions latérales
+        if (prevX + this.width <= wall.x && this.x + this.width > wall.x) {
+          // Collision par la gauche
+          this.x = wall.x - this.width;
+        } else if (prevX >= wall.x + wall.width && this.x < wall.x + wall.width) {
+          // Collision par la droite
+          this.x = wall.x + wall.width;
         }
       }
     });
@@ -60,18 +77,22 @@ class Player extends GameObject {
       this.jumpCount = 0; // Réinitialise le compteur de sauts
       this.rotation = 0;
       isOnGround = true;
-    } else if (this.y + this.height === canvasHeight) {
-      isOnGround = true;
+    } else if (this.y < 0) {
+      // Empêche le joueur de sortir par le haut du canvas
+      this.y = 0;
+      this.vy = 0;
+      hitCeiling = true;
     }
 
-    if (!isOnGround) {
+    if (!isOnGround && !hitCeiling) {
       this.isJumping = true;
       this.rotation += 0.1; // Ajout de la rotation pour l'animation
     } else {
-      this.rotation = 0; // Réinitialisation de la rotation quand le joueur est au sol
+      this.rotation = 0; // Réinitialisation de la rotation quand le joueur est au sol ou touche le plafond
     }
   }
 
+  // Affiche le joueur sur le canvas
   render(ctx) {
     ctx.save();
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
@@ -82,6 +103,7 @@ class Player extends GameObject {
     ctx.restore();
   }
 
+  // Affiche la barre de vie du joueur
   renderHP(ctx) {
     const hpBarWidth = 100; // Largeur de la barre de vie
     const hpBarHeight = 20; // Hauteur de la barre de vie
