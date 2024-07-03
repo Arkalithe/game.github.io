@@ -1,10 +1,10 @@
-import { Player } from './player.js';
-import { Enemy } from './enemy.js';
-import { LaserEnemy } from './laserEnemy.js';
-import { initializeWalls } from './wall.js';
-import { Portal } from './portal.js';
-import { Projectile, LaserProjectile } from './projectile.js';
-import { Controle } from './controle.js';
+import { Player } from "./player.js";
+import { Enemy } from "./enemy.js";
+import { LaserEnemy } from "./laserEnemy.js";
+import { initializeWalls } from "./wall.js";
+import { Portal } from "./portal.js";
+import { Projectile, LaserProjectile } from "./projectile.js";
+import { Controle } from "./controle.js";
 
 export let keys = {}; // Définir la variable keys directement dans game.js
 
@@ -23,8 +23,8 @@ const ctx = canvas.getContext("2d");
 
 // Redimensionne le canvas et initialise les objets du jeu
 function resizeCanvas() {
-  canvas.width = window.innerWidth * 0.9;
-  canvas.height = window.innerHeight * 0.9;
+  canvas.width = 1400;
+  canvas.height = 700;
   if (!player) {
     player = new Player(canvas.width, canvas.height);
     enemy = new Enemy(canvas.width, canvas.height);
@@ -40,11 +40,21 @@ resizeCanvas();
 // Met à jour l'état du jeu
 function update() {
   if (!isGameOver) {
-    player.updatePosition(keys, canvas.width, canvas.height, [...walls, enemy, laserEnemy]);
+    player.updatePosition(keys, canvas.width, canvas.height, [
+      ...walls,
+      enemy,
+      laserEnemy,
+    ]);
     laserEnemy.update(player, projectiles);
     projectiles.forEach((projectile, index) => {
       projectile.update();
-      if (projectile.x > canvas.width || projectile.y > canvas.height || projectile.x < 0 || projectile.y < 0 || walls.some(wall => wall.checkCollision(projectile))) {
+      if (
+        projectile.x > canvas.width ||
+        projectile.y > canvas.height ||
+        projectile.x < 0 ||
+        projectile.y < 0 ||
+        walls.some((wall) => wall.checkCollision(projectile))
+      ) {
         projectiles.splice(index, 1);
       }
     });
@@ -70,8 +80,8 @@ function render() {
   enemy.render(ctx);
   laserEnemy.render(ctx, player); // Passer player en paramètre
   portal.render(ctx);
-  walls.forEach(wall => wall.render(ctx));
-  projectiles.forEach(projectile => projectile.render(ctx));
+  walls.forEach((wall) => wall.render(ctx));
+  projectiles.forEach((projectile) => projectile.render(ctx));
   player.render(ctx);
   player.renderHP(ctx);
   ctx.restore();
@@ -87,7 +97,11 @@ function render() {
 function renderPortalMessage() {
   ctx.fillStyle = "black";
   ctx.font = "24px serif";
-  ctx.fillText("Appuyez sur 'E' pour terminer le niveau", canvas.width / 2 - 150, canvas.height / 2 - 50);
+  ctx.fillText(
+    "Appuyez sur 'E' pour terminer le niveau",
+    canvas.width / 2 - 150,
+    canvas.height / 2 - 50
+  );
 }
 
 // Détecte les collisions entre les projectiles et le joueur
@@ -115,7 +129,11 @@ function renderGameOver() {
   ctx.font = "48px serif";
   ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2);
   ctx.font = "24px serif";
-  ctx.fillText("Appuyez sur 'R' pour redémarrer", canvas.width / 2 - 150, canvas.height / 2 + 40);
+  ctx.fillText(
+    "Appuyez sur 'R' pour redémarrer",
+    canvas.width / 2 - 150,
+    canvas.height / 2 + 40
+  );
 }
 
 // Terminer le niveau et afficher le message de fin de niveau
@@ -158,7 +176,11 @@ function gameLoop() {
 // Tir des projectiles par l'ennemi toutes les 2 secondes
 setInterval(() => {
   if (!isGameOver) {
-    const projectile = new Projectile(enemy.x + enemy.width, enemy.y + enemy.height / 2 - 5, 5);
+    const projectile = new Projectile(
+      enemy.x + enemy.width,
+      enemy.y + enemy.height / 2 - 5,
+      5
+    );
     projectiles.push(projectile);
   }
 }, 2000);
