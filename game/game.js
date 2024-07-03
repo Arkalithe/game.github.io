@@ -1,10 +1,9 @@
-// game.js
-
 import { Player } from './player.js';
 import { Enemy } from './enemy.js';
+import { LaserEnemy } from './laserEnemy.js';
 import { initializeWalls } from './wall.js';
 import { Portal } from './portal.js';
-import { Projectile } from './projectile.js';
+import { Projectile, LaserProjectile } from './projectile.js';
 import { Controle } from './controle.js';
 
 export let keys = {}; // Définir la variable keys directement dans game.js
@@ -14,6 +13,7 @@ export let isGameOver = false;
 export let portal;
 
 let enemy;
+let laserEnemy;
 let walls = [];
 let projectiles = [];
 let scrollOffset = 0; // Offset de défilement horizontal
@@ -28,6 +28,7 @@ function resizeCanvas() {
   if (!player) {
     player = new Player(canvas.width, canvas.height);
     enemy = new Enemy(canvas.width, canvas.height);
+    laserEnemy = new LaserEnemy(canvas.width, canvas.height);
     portal = new Portal(canvas.width * 2, canvas.height - 100);
     initializeWalls(walls, canvas);
   }
@@ -39,11 +40,11 @@ resizeCanvas();
 // Met à jour l'état du jeu
 function update() {
   if (!isGameOver) {
-    // Retirer le portail de la liste des objets à vérifier pour les collisions
-    player.updatePosition(keys, canvas.width, canvas.height, [...walls, enemy]);
+    player.updatePosition(keys, canvas.width, canvas.height, [...walls, enemy, laserEnemy]);
+    laserEnemy.update(player, projectiles);
     projectiles.forEach((projectile, index) => {
       projectile.update();
-      if (projectile.x > canvas.width || walls.some(wall => wall.checkCollision(projectile))) {
+      if (projectile.x > canvas.width || projectile.y > canvas.height || projectile.x < 0 || projectile.y < 0 || walls.some(wall => wall.checkCollision(projectile))) {
         projectiles.splice(index, 1);
       }
     });
@@ -67,6 +68,7 @@ function render() {
   ctx.save();
   ctx.translate(-scrollOffset, 0);
   enemy.render(ctx);
+  laserEnemy.render(ctx, player); // Passer player en paramètre
   portal.render(ctx);
   walls.forEach(wall => wall.render(ctx));
   projectiles.forEach(projectile => projectile.render(ctx));
@@ -134,6 +136,7 @@ export function restartGame() {
   scrollOffset = 0;
   player = new Player(canvas.width, canvas.height);
   enemy = new Enemy(canvas.width, canvas.height);
+  laserEnemy = new LaserEnemy(canvas.width, canvas.height);
   portal = new Portal(canvas.width * 2, canvas.height - 100);
   walls = [];
   initializeWalls(walls, canvas);
