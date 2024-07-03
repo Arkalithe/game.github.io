@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 
 let player;
 let enemy;
-let wall;
+let walls = [];
 let projectiles = [];
 let isGameOver = false;
 let scrollOffset = 0; // Offset de défilement horizontal
@@ -16,8 +16,19 @@ function resizeCanvas() {
   if (!player) {
     player = new Player(canvas.width, canvas.height);
     enemy = new Enemy(canvas.width, canvas.height);
-    wall = new Wall(canvas.width, canvas.height);
     portal = new Portal(canvas.width * 2, canvas.height - 100); // Position et taille agrandie du portail
+    initializeWalls([
+      { x: canvas.width / 2, y: canvas.height - 100, width: 50, height: 100, },
+      { x: canvas.width * 1.9, y: canvas.height - 100, width: 100, height: 50,  color: "yellow"},
+      { x: canvas.width * 1.80, y: canvas.height - 200, width: 100, height: 50,  color: "yellow"},
+      { x: canvas.width * 1.9, y: canvas.height - 300, width: 100, height: 50,  color: "yellow"},
+      { x: canvas.width * 1.80, y: canvas.height - 400, width: 100, height: 50,  color: "yellow"},
+      { x: canvas.width * 1.95, y: canvas.height - 500, width: 50, height: 500,  color: "red"},
+      { x: canvas.width * 1.9, y: canvas.height - 500, width: -3550, height: 50,  color: "red"},
+
+
+      // Ajoutez autant de murs que nécessaire
+    ]); // Initialiser les murs
   } else {
     player.x = canvas.width / 2 - player.width / 2;
     player.y = canvas.height - player.height - 10;
@@ -25,7 +36,13 @@ function resizeCanvas() {
     enemy.y = canvas.height - enemy.height - 10;
     portal.x = canvas.width * 2;
     portal.y = canvas.height - portal.height - 10;
+    // Ajuster les positions des murs si nécessaire
   }
+}
+
+// Initialiser les murs avec des paramètres spécifiques
+function initializeWalls(wallParams) {
+  walls = wallParams.map(params => new Wall(params.x, params.y, params.width, params.height, params.color));
 }
 
 // Écoute les changements de taille de la fenêtre pour redimensionner le canvas
@@ -35,11 +52,11 @@ resizeCanvas();
 // Met à jour l'état du jeu
 function update() {
   if (!isGameOver) {
-    player.updatePosition(keys, canvas.width, canvas.height, [wall, enemy, portal]);
+    player.updatePosition(keys, canvas.width, canvas.height, [...walls, enemy, portal]);
     projectiles.forEach((projectile, index) => {
       projectile.update();
       // Si le projectile sort du canvas ou entre en collision avec un mur, il est supprimé
-      if (projectile.x > canvas.width || wall.checkCollision(projectile)) {
+      if (projectile.x > canvas.width || walls.some(wall => wall.checkCollision(projectile))) {
         projectiles.splice(index, 1);
       }
     });
@@ -65,8 +82,8 @@ function render() {
   player.render(ctx); // Affiche le joueur
   player.renderHP(ctx); // Affiche la barre de vie du joueur
   enemy.render(ctx); // Affiche l'ennemi
-  wall.render(ctx); // Affiche le mur
   portal.render(ctx); // Affiche le portail
+  walls.forEach(wall => wall.render(ctx)); // Afficher les murs
   projectiles.forEach((projectile) => projectile.render(ctx)); // Affiche les projectiles
   ctx.restore();
   if (player.isNear(portal)) {
@@ -127,12 +144,16 @@ function restartGame() {
   scrollOffset = 0; // Réinitialise le défilement horizontal
   player = new Player(canvas.width, canvas.height); // Réinitialise le joueur
   enemy = new Enemy(canvas.width, canvas.height); // Réinitialise l'ennemi
-  wall = new Wall(canvas.width, canvas.height); // Réinitialise le mur
   portal = new Portal(canvas.width * 2, canvas.height - 100); // Réinitialise le portail
+  walls = []; // Vide la liste des murs
+  initializeWalls([
+    { x: canvas.width / 2, y: canvas.height - 100, width: 50, height: 100 },
+    { x: canvas.width / 1.5, y: canvas.height - 150, width: 50, height: 100 },
+    // Ajoutez autant de murs que nécessaire
+  ]); // Réinitialise les murs
   projectiles = []; // Vide la liste des projectiles
   gameLoop(); // Relance la boucle du jeu
 }
-
 
 let animationFrameId;
 
