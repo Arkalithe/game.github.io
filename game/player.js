@@ -28,6 +28,11 @@ export class Player extends GameObject {
       this.x += this.speed;
     }
 
+    // Empêche le joueur de sortir par la gauche du canvas
+    if (this.x < 0) {
+      this.x = 0;
+    }
+
     // Application de la gravité
     this.vy += this.gravity;
     this.y += this.vy;
