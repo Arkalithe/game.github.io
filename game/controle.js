@@ -1,28 +1,39 @@
-import { player, isGameOver, restartGame, endLevel, keys, portal } from './game.js';
+export class Controle {
+  constructor(keys, player, portal) {
+    this.keys = keys;
+    this.player = player;
+    this.portal = portal;
 
-// Écouteur d'événement pour les touches pressées
-document.addEventListener("keydown", (e) => {
-  keys[e.key.toLowerCase()] = true;
-
-  // Gestion du saut et du double saut
-  if (e.key === " " && player && (player.jumpCount < player.maxJumps)) {
-    player.vy = -player.jumpPower;
-    player.jumpCount++;
-    player.isJumping = true;
+    // Écouteur d'événement pour les touches pressées
+    document.addEventListener("keydown", (e) => this.keyDownHandler(e));
+    // Écouteur d'événement pour les touches relâchées
+    document.addEventListener("keyup", (e) => this.keyUpHandler(e));
   }
 
-  // Gestion du redémarrage du jeu en appuyant sur 'R'
-  if (e.key.toLowerCase() === "r" && isGameOver) {
-    restartGame();
+  // Gestion des touches pressées
+  keyDownHandler(e) {
+    this.keys[e.key.toLowerCase()] = true;
+
+    // Gestion du saut et du double saut
+    if (e.key === " " && this.player && (this.player.jumpCount < this.player.maxJumps)) {
+      this.player.vy = -this.player.jumpPower;
+      this.player.jumpCount++;
+      this.player.isJumping = true;
+    }
+
+    // Gestion du redémarrage du jeu en appuyant sur 'R'
+    if (e.key.toLowerCase() === "r" && window.isGameOver) {
+      window.restartGame();
+    }
+
+    // Gestion de la fin du niveau en appuyant sur 'E' si le joueur est proche du portail
+    if (e.key.toLowerCase() === "e" && this.player && this.portal && this.player.isNear(this.portal)) {
+      window.endLevel();
+    }
   }
 
-  // Gestion de la fin du niveau en appuyant sur 'E' si le joueur est proche du portail
-  if (e.key.toLowerCase() === "e" && player && portal && player.isNear(portal)) {
-    endLevel();
+  // Gestion des touches relâchées
+  keyUpHandler(e) {
+    this.keys[e.key.toLowerCase()] = false;
   }
-});
-
-// Écouteur d'événement pour les touches relâchées
-document.addEventListener("keyup", (e) => {
-  keys[e.key.toLowerCase()] = false;
-});
+}

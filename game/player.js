@@ -2,7 +2,7 @@ import { GameObject } from './gameObject.js';
 
 export class Player extends GameObject {
   constructor(canvasWidth, canvasHeight, color = "blue") {
-    super(canvasWidth / 2 -800, canvasHeight - 60, 50, 50, color);
+    super(canvasWidth / 2 - 800, canvasHeight - 60, 50, 50, color);
     this.speed = 5; // Vitesse de déplacement du joueur
     this.jumpPower = 6; // Puissance du saut
     this.gravity = 0.3; // Gravité appliquée au joueur

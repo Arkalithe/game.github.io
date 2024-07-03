@@ -1,8 +1,9 @@
 import { Player } from './player.js';
 import { Enemy } from './enemy.js';
-import {  initializeWalls } from './wall.js';
+import { initializeWalls } from './wall.js';
 import { Portal } from './portal.js';
 import { Projectile } from './projectile.js';
+import { Controle } from './controle.js';
 
 export let keys = {}; // Définir la variable keys directement dans game.js
 
@@ -154,3 +155,4 @@ setInterval(() => {
 }, 2000);
 
 gameLoop();
+new Controle(keys, player, portal);
