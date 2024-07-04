@@ -38,27 +38,27 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
+// Vérifie si un objet est visible dans la fenêtre
+function isVisible(obj) {
+  return (
+    obj.x + obj.width > scrollOffset &&
+    obj.x < scrollOffset + canvas.width &&
+    obj.y + obj.height > 0 &&
+    obj.y < canvas.height
+  );
+}
+
 // Met à jour l'état du jeu
 function update() {
   if (!window.isGameOver) {
     player.updatePosition(keys, canvas.width, canvas.height, [
-      ...walls,
+      ...walls.filter(isVisible), // Mettre à jour uniquement les murs visibles
       enemy,
       laserEnemy,
     ]);
     laserEnemy.update(player, projectiles);
-    projectiles.forEach((projectile, index) => {
-      projectile.update();
-      if (
-        projectile.x > canvas.width ||
-        projectile.y > canvas.height ||
-        projectile.x < 0 ||
-        projectile.y < 0 ||
-        walls.some((wall) => wall.checkCollision(projectile))
-      ) {
-        projectiles.splice(index, 1);
-      }
-    });
+    projectiles = projectiles.filter(isVisible); // Filtrer les projectiles visibles
+    projectiles.forEach((projectile) => projectile.update());
     detectCollisions();
     handleScrolling();
   }
@@ -71,13 +71,14 @@ function handleScrolling() {
   // Garder le joueur centré sur l'écran
   scrollOffset = playerCenterX - canvas.width / 2;
 
-  // Empêche le défilement au-delà du bord gauche du canvas
+  // Empêcher le défilement au-delà du bord gauche du canvas
   if (scrollOffset < 0) {
     scrollOffset = 0;
   }
 
-  // Empêche le défilement au-delà du bord droit du canvas
-  const maxScrollOffset = canvas.width * 2 - canvas.width;
+  // Empêcher le défilement au-delà du bord droit du niveau (y compris le portail)
+  const levelWidth = Math.max((portal.x + portal.width, canvas.width * 2)+200);
+  const maxScrollOffset = levelWidth - canvas.width;
   if (scrollOffset > maxScrollOffset) {
     scrollOffset = maxScrollOffset;
   }
@@ -88,11 +89,13 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
   ctx.translate(-scrollOffset, 0);
-  enemy.render(ctx);
-  laserEnemy.render(ctx, player); // Passer player en paramètre
-  portal.render(ctx);
-  walls.forEach((wall) => wall.render(ctx));
-  projectiles.forEach((projectile) => projectile.render(ctx));
+
+  // Rendre uniquement les éléments visibles
+  if (isVisible(enemy)) enemy.render(ctx);
+  if (isVisible(laserEnemy)) laserEnemy.render(ctx, player); // Passer player en paramètre
+  if (isVisible(portal)) portal.render(ctx);
+  walls.filter(isVisible).forEach((wall) => wall.render(ctx)); // Rendre uniquement les murs visibles
+  projectiles.filter(isVisible).forEach((projectile) => projectile.render(ctx)); // Rendre uniquement les projectiles visibles
   player.render(ctx);
   player.renderHP(ctx);
   ctx.restore();
@@ -192,7 +195,7 @@ function gameLoop() {
 
 // Tir des projectiles par l'ennemi toutes les 2 secondes
 setInterval(() => {
-  if (!window.isGameOver) {
+  if (!window.isGameOver && isVisible(enemy)) {
     const projectile = new Projectile(
       enemy.x + enemy.width,
       enemy.y + enemy.height / 2 - 5,
