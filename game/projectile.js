@@ -33,7 +33,7 @@ export class LaserProjectile extends GameObject {
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
-    ctx.lineTo(this.x - this.dx, this.y - this.dy); // Dessiner une ligne plus longue pour représenter le laser
+    ctx.lineTo(this.x - this.dx * 10, this.y - this.dy * 10); // Dessiner une ligne plus longue pour représenter le laser
     ctx.stroke();
   }
 }
