@@ -64,12 +64,22 @@ function update() {
   }
 }
 
-// Gère le défilement horizontal du jeu
+// Gère le défilement horizontal pour garder le joueur visible
 function handleScrolling() {
-  if (player.x > canvas.width * 0.7 + scrollOffset) {
-    scrollOffset = player.x - canvas.width * 0.7;
-  } else if (player.x < canvas.width * 0.3 + scrollOffset && scrollOffset > 0) {
-    scrollOffset = player.x - canvas.width * 0.3;
+  const playerCenterX = player.x + player.width / 2;
+
+  // Garder le joueur centré sur l'écran
+  scrollOffset = playerCenterX - canvas.width / 2;
+
+  // Empêche le défilement au-delà du bord gauche du canvas
+  if (scrollOffset < 0) {
+    scrollOffset = 0;
+  }
+
+  // Empêche le défilement au-delà du bord droit du canvas
+  const maxScrollOffset = canvas.width * 2 - canvas.width;
+  if (scrollOffset > maxScrollOffset) {
+    scrollOffset = maxScrollOffset;
   }
 }
 

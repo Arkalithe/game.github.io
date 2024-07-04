@@ -2,7 +2,9 @@ import { GameObject } from "./gameObject.js";
 
 export class Player extends GameObject {
   constructor(canvasWidth, canvasHeight, color = "blue") {
-    super(canvasWidth / 2 - 800, canvasHeight - 60, 50, 50, color);
+    const startX = Math.min(canvasWidth / 2 - 800, canvasWidth - 50); // le joueur commence à l'intérieur de la largeur du canvas
+    const startY = canvasHeight - 60;
+    super(startX, startY, 50, 50, color);
     this.speed = 5; // Vitesse de déplacement du joueur
     this.jumpPower = 6; // Puissance du saut
     this.gravity = 0.3; // Gravité appliquée au joueur
@@ -10,7 +12,7 @@ export class Player extends GameObject {
     this.isJumping = false; // Indique si le joueur est en train de sauter
     this.maxJumps = 2; // Autorise le double saut
     this.jumpCount = 0; // Compteur pour les sauts
-    this.rotation = 0; // Rotation du joueur pour l'animation
+    this.rotation = 0; // Rotation pour l'animation
     this.hp = 3; // Points de vie du joueur
   }
 
@@ -92,6 +94,7 @@ export class Player extends GameObject {
       hitCeiling = true;
     }
 
+    // Ajuster la rotation pour l'animation lors du saut
     if (!isOnGround && !hitCeiling) {
       this.isJumping = true;
       this.rotation += 0.1; // Ajout de la rotation pour l'animation
