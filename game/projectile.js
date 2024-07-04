@@ -1,4 +1,4 @@
-import { GameObject } from './gameObject.js';
+import { GameObject } from "./gameObject.js";
 
 export class Projectile extends GameObject {
   constructor(x, y, speed) {
@@ -29,7 +29,7 @@ export class LaserProjectile extends GameObject {
   }
 
   render(ctx) {
-    ctx.strokeStyle = 'red';
+    ctx.strokeStyle = "red";
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);

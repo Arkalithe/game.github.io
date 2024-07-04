@@ -9,7 +9,6 @@ import { Controle } from "./controle.js";
 export let keys = {}; // Définir la variable keys directement dans game.js
 
 export let player;
-export let isGameOver = false;
 export let portal;
 
 let enemy;
@@ -20,6 +19,8 @@ let scrollOffset = 0; // Offset de défilement horizontal
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+
+window.isGameOver = false; // Définir isGameOver sur l'objet window
 
 // Redimensionne le canvas et initialise les objets du jeu
 function resizeCanvas() {
@@ -39,7 +40,7 @@ resizeCanvas();
 
 // Met à jour l'état du jeu
 function update() {
-  if (!isGameOver) {
+  if (!window.isGameOver) {
     player.updatePosition(keys, canvas.width, canvas.height, [
       ...walls,
       enemy,
@@ -88,7 +89,7 @@ function render() {
   if (player.isNear(portal)) {
     renderPortalMessage();
   }
-  if (isGameOver) {
+  if (window.isGameOver) {
     renderGameOver();
   }
 }
@@ -119,7 +120,8 @@ function detectCollisions() {
 
 // Termine le jeu en cas de game over
 function gameOver() {
-  isGameOver = true;
+  window.isGameOver = true;
+  console.log("Game Over");
   cancelAnimationFrame(animationFrameId);
 }
 
@@ -138,7 +140,8 @@ function renderGameOver() {
 
 // Terminer le niveau et afficher le message de fin de niveau
 export function endLevel() {
-  isGameOver = true;
+  window.isGameOver = true;
+  console.log("Level Ended");
   cancelAnimationFrame(animationFrameId);
   ctx.fillStyle = "black";
   ctx.font = "48px serif";
@@ -150,7 +153,8 @@ window.endLevel = endLevel;
 
 // Redémarre le jeu
 export function restartGame() {
-  isGameOver = false;
+  window.isGameOver = false;
+  console.log("Game Restarted");
   scrollOffset = 0;
   player = new Player(canvas.width, canvas.height);
   enemy = new Enemy(canvas.width, canvas.height);
@@ -162,20 +166,23 @@ export function restartGame() {
   gameLoop();
 }
 
+// Attache restartGame à l'objet window
+window.restartGame = restartGame;
+
 let animationFrameId;
 
 // Boucle principale du jeu
 function gameLoop() {
   update();
   render();
-  if (!isGameOver) {
+  if (!window.isGameOver) {
     animationFrameId = requestAnimationFrame(gameLoop);
   }
 }
 
 // Tir des projectiles par l'ennemi toutes les 2 secondes
 setInterval(() => {
-  if (!isGameOver) {
+  if (!window.isGameOver) {
     const projectile = new Projectile(
       enemy.x + enemy.width,
       enemy.y + enemy.height / 2 - 5,

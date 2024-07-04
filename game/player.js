@@ -1,4 +1,4 @@
-import { GameObject } from './gameObject.js';
+import { GameObject } from "./gameObject.js";
 
 export class Player extends GameObject {
   constructor(canvasWidth, canvasHeight, color = "blue") {
@@ -67,7 +67,10 @@ export class Player extends GameObject {
         if (prevX + this.width <= wall.x && this.x + this.width > wall.x) {
           // Collision par la gauche
           this.x = wall.x - this.width;
-        } else if (prevX >= wall.x + wall.width && this.x < wall.x + wall.width) {
+        } else if (
+          prevX >= wall.x + wall.width &&
+          this.x < wall.x + wall.width
+        ) {
           // Collision par la droite
           this.x = wall.x + wall.width;
         }
