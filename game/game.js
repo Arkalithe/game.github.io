@@ -25,6 +25,21 @@ window.isGameOver = false; // Définir isGameOver sur l'objet window
 // Déclarez cette variable en dehors des fonctions pour une portée globale
 let controle;
 
+function isInView(object, viewport, scrollOffset) {
+  return (
+    object.x + object.width > scrollOffset &&
+    object.x < scrollOffset + viewport.width &&
+    object.y + object.height > 0 &&
+    object.y < viewport.height
+  );
+}
+
+function renderIfInView(object, ctx, viewport, scrollOffset) {
+  if (isInView(object, viewport, scrollOffset)) {
+    object.render(ctx);
+  }
+}
+
 // Redimensionne le canvas et initialise les objets du jeu
 function resizeCanvas() {
   canvas.width = 1400;
@@ -44,14 +59,24 @@ resizeCanvas();
 // Met à jour l'état du jeu
 function update() {
   if (!window.isGameOver) {
+    const viewport = { width: canvas.width, height: canvas.height };
+
+    // Toujours mettre à jour le joueur
     player.updatePosition(keys, canvas.width, canvas.height, [
       ...walls,
       enemy,
       laserEnemy,
     ]);
-    laserEnemy.update(player, projectiles);
+
+    if (isInView(laserEnemy, viewport, scrollOffset)) {
+      laserEnemy.update(player, projectiles);
+    }
+
     projectiles.forEach((projectile, index) => {
-      projectile.update();
+      if (isInView(projectile, viewport, scrollOffset)) {
+        projectile.update();
+      }
+
       if (
         projectile.x > canvas.width ||
         projectile.y > canvas.height ||
@@ -62,6 +87,7 @@ function update() {
         projectiles.splice(index, 1);
       }
     });
+
     detectCollisions();
     handleScrolling();
   }
@@ -88,20 +114,28 @@ function handleScrolling() {
 
 // Affiche les éléments du jeu
 function render() {
+  const viewport = { width: canvas.width, height: canvas.height };
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
   ctx.translate(-scrollOffset, 0);
-  enemy.render(ctx);
-  laserEnemy.render(ctx, player); // Passer player en paramètre
+  
+  renderIfInView(enemy, ctx, viewport, scrollOffset);
+  laserEnemy.render(ctx, player); // Toujours rendre le laserEnemy
   portal.render(ctx);
-  walls.forEach((wall) => wall.render(ctx));
-  projectiles.forEach((projectile) => projectile.render(ctx));
+  walls.forEach((wall) => renderIfInView(wall, ctx, viewport, scrollOffset));
+  projectiles.forEach((projectile) => renderIfInView(projectile, ctx, viewport, scrollOffset));
+
+  // Toujours rendre le joueur
   player.render(ctx);
   player.renderHP(ctx);
+
   ctx.restore();
+
   if (player.isNear(portal)) {
     renderPortalMessage();
   }
+
   if (window.isGameOver) {
     renderGameOver();
   }
