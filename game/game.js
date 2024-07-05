@@ -22,6 +22,9 @@ const ctx = canvas.getContext("2d");
 
 window.isGameOver = false; // Définir isGameOver sur l'objet window
 
+// Déclarez cette variable en dehors des fonctions pour une portée globale
+let controle;
+
 // Redimensionne le canvas et initialise les objets du jeu
 function resizeCanvas() {
   canvas.width = 1400;
@@ -173,6 +176,8 @@ export function restartGame() {
   walls = [];
   initializeWalls(walls, canvas);
   projectiles = [];
+  player.jumpCount = 0; // Réinitialise le compteur de sauts
+  controle.updatePlayerAndPortal(player, portal); // Met à jour le joueur et le portail dans la classe Controle
   gameLoop();
 }
 
@@ -203,4 +208,4 @@ setInterval(() => {
 }, 2000);
 
 gameLoop();
-new Controle(keys, player, portal);
+controle = new Controle(keys, player, portal);
