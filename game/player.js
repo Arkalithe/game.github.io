@@ -114,12 +114,12 @@ export class Player extends GameObject {
     ctx.restore();
   }
 
-  // Affiche la barre de vie du joueur
-  renderHP(ctx) {
+  // Affiche la barre de vie du joueur en haut à droite de l'écran
+  renderHP(ctx, canvasWidth) {
     const hpBarWidth = 100; // Largeur de la barre de vie
     const hpBarHeight = 20; // Hauteur de la barre de vie
-    const hpBarX = 10; // Position X de la barre de vie
-    const hpBarY = 10; // Position Y de la barre de vie
+    const hpBarX = canvasWidth - hpBarWidth - 1250; // Position X de la barre de vie en haut à droite
+    const hpBarY = 20; // Position Y de la barre de vie
     ctx.fillStyle = "red";
     ctx.fillRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
     ctx.fillStyle = "green";

@@ -5,11 +5,13 @@ import { initializeWalls } from "./wall.js";
 import { Portal } from "./portal.js";
 import { Projectile, LaserProjectile } from "./projectile.js";
 import { Controle } from "./controle.js";
+import { GreenCross } from "./greenCross.js";
 
 export let keys = {}; // Définir la variable keys directement dans game.js
 
 export let player;
 export let portal;
+export let greenCross;
 
 let enemy;
 let laserEnemy;
@@ -49,6 +51,7 @@ function resizeCanvas() {
     enemy = new Enemy(canvas.width, canvas.height);
     laserEnemy = new LaserEnemy(canvas.width, canvas.height);
     portal = new Portal(canvas.width * 2, canvas.height - 100);
+    greenCross = new GreenCross(canvas.width / 2 + 100, canvas.height - 50);
     initializeWalls(walls, canvas);
   }
 }
@@ -123,14 +126,17 @@ function render() {
   renderIfInView(enemy, ctx, viewport, scrollOffset);
   laserEnemy.render(ctx, player); // Toujours rendre le laserEnemy
   portal.render(ctx);
+  greenCross.render(ctx); // Toujours rendre la croix verte
   walls.forEach((wall) => renderIfInView(wall, ctx, viewport, scrollOffset));
   projectiles.forEach((projectile) => renderIfInView(projectile, ctx, viewport, scrollOffset));
 
   // Toujours rendre le joueur
   player.render(ctx);
-  player.renderHP(ctx);
 
   ctx.restore();
+
+  // Affiche la barre de vie du joueur en haut à droite de l'écran
+  player.renderHP(ctx, canvas.width);
 
   if (player.isNear(portal)) {
     renderPortalMessage();
@@ -163,6 +169,11 @@ function detectCollisions() {
       }
     }
   });
+
+  // Détecte la collision entre le joueur et la croix verte
+  if (greenCross && greenCross.checkCollision(player)) {
+    greenCross.collect(player);
+  }
 }
 
 // Termine le jeu en cas de game over
@@ -207,6 +218,7 @@ export function restartGame() {
   enemy = new Enemy(canvas.width, canvas.height);
   laserEnemy = new LaserEnemy(canvas.width, canvas.height);
   portal = new Portal(canvas.width * 2, canvas.height - 100);
+  greenCross = new GreenCross(canvas.width / 2 + 100, canvas.height - 50); // Ajouter une nouvelle croix verte
   walls = [];
   initializeWalls(walls, canvas);
   projectiles = [];
