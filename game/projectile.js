@@ -1,8 +1,9 @@
+// projectile.js
 import { GameObject } from "./gameObject.js";
 
 export class Projectile extends GameObject {
-  constructor(x, y, dx, dy, speed) {
-    super(x, y, 10, 10, "red");
+  constructor(x, y, dx, dy, speed, color = "red") {
+    super(x, y, 10, 10, color);
     this.dx = dx;
     this.dy = dy;
     this.speed = speed; // Vitesse du projectile
@@ -21,8 +22,8 @@ export class Projectile extends GameObject {
 }
 
 export class LaserProjectile extends GameObject {
-  constructor(x, y, targetX, targetY) {
-    super(x, y, 10, 10, "red");
+  constructor(x, y, targetX, targetY, color = "red") {
+    super(x, y, 10, 10, color);
     this.targetX = targetX;
     this.targetY = targetY;
     this.speed = 10;
@@ -37,7 +38,7 @@ export class LaserProjectile extends GameObject {
   }
 
   render(ctx) {
-    ctx.strokeStyle = "red";
+    ctx.strokeStyle = this.color;
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);

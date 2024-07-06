@@ -9,9 +9,19 @@ export class Wall extends GameObject {
 // Initialise les murs avec des paramètres spécifiques
 export function initializeWalls(walls, canvas) {
   const wallParams = [
-    { x: canvas.width / 2 + 200, y: canvas.height - 200, width: 50, height: 200 },
-    { x: canvas.width / 2 + 150, y: canvas.height - 100, width: 50, height: 100 },
-    { x: canvas.width / 2 -200, y: canvas.height - 50, width: 50, height: 50 },
+    {
+      x: canvas.width / 2 + 200,
+      y: canvas.height - 200,
+      width: 50,
+      height: 200,
+    },
+    {
+      x: canvas.width / 2 + 150,
+      y: canvas.height - 100,
+      width: 50,
+      height: 100,
+    },
+    { x: canvas.width / 2 - 200, y: canvas.height - 50, width: 50, height: 50 },
     {
       x: canvas.width * 1 + 40,
       y: canvas.height - 200,
@@ -130,4 +140,16 @@ export function initializeWalls(walls, canvas) {
       new Wall(params.x, params.y, params.width, params.height, params.color)
     )
   );
+}
+export function initializeBossArenaWalls(walls, canvas) {
+  const bossArenaWalls = [
+    { x: 0, y: 0, width: 50, height: canvas.height,color: "black", }, 
+    { x: canvas.width - 50, y: 0, width: 50, height: canvas.height,color: "black", },
+    { x: 0, y: 0, width: canvas.width, height: 50,color: "black", },
+    { x: 0, y: canvas.height - 50, width: canvas.width, height: 50,color: "black", }, 
+  ];
+
+  bossArenaWalls.forEach((params) => {
+    walls.push(new Wall(params.x, params.y, params.width, params.height, params.color));
+  });
 }

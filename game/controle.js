@@ -1,8 +1,9 @@
 export class Controle {
-  constructor(keys, player, portal) {
+  constructor(keys, player, portal, startBossFight) {
     this.keys = keys;
     this.player = player;
     this.portal = portal;
+    this.startBossFight = startBossFight;
 
     // Écouteur d'événement pour les touches pressées
     document.addEventListener("keydown", (e) => this.keyDownHandler(e));
@@ -37,11 +38,8 @@ export class Controle {
 
     // Gestion de la fin du niveau en appuyant sur 'E' si le joueur est à l'intérieur du portail
     if (e.key.toLowerCase() === "e") {
-      if (this.player && this.portal) {
-        if (this.player.isInside(this.portal)) {
-          window.endLevel();
-        } else {
-        }
+      if (this.player && this.portal && this.player.isInside(this.portal)) {
+        this.startBossFight();
       }
     }
   }
