@@ -70,8 +70,28 @@ export function restartGame() {
 window.restartGame = restartGame;
 
 function gameLoop() {
-  update(player, enemies, laserEnemy, projectiles, walls, keys, canvas, greenCross);
-  render(ctx, canvas, player, enemies, laserEnemy, portal, greenCross, walls, projectiles, player.scrollOffset);
+  update(
+    player,
+    enemies,
+    laserEnemy,
+    projectiles,
+    walls,
+    keys,
+    canvas,
+    greenCross
+  );
+  render(
+    ctx,
+    canvas,
+    player,
+    enemies,
+    laserEnemy,
+    portal,
+    greenCross,
+    walls,
+    projectiles,
+    player.scrollOffset
+  );
   if (!window.isGameOver) {
     window.animationFrameId = requestAnimationFrame(gameLoop);
   }

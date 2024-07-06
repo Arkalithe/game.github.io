@@ -20,7 +20,6 @@ export class Projectile extends GameObject {
   }
 }
 
-
 export class LaserProjectile extends GameObject {
   constructor(x, y, targetX, targetY) {
     super(x, y, 10, 10, "red");
