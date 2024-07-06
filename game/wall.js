@@ -11,8 +11,50 @@ export function initializeWalls(walls, canvas) {
   const wallParams = [
     { x: canvas.width / 2, y: canvas.height - 150, width: 50, height: 100 },
     {
-      x: canvas.width * 1 + 40 ,
+      x: canvas.width * 1 + 40,
       y: canvas.height - 200,
+      width: 50,
+      height: 50,
+      color: "blue",
+    },
+    {
+      x: canvas.width * 1 + 150,
+      y: canvas.height - 300,
+      width: 50,
+      height: 300,
+      color: "blue",
+    },
+    {
+      x: canvas.width * 1 + 150,
+      y: canvas.height - 300,
+      width: 250,
+      height: 50,
+      color: "blue",
+    },
+    {
+      x: canvas.width * 1 + 350,
+      y: canvas.height - 350,
+      width: 250,
+      height: 50,
+      color: "blue",
+    },
+    {
+      x: canvas.width * 1 + 550,
+      y: canvas.height - 400,
+      width: 200,
+      height: 50,
+      color: "blue",
+    },
+    {
+      x: canvas.width * 1 + 350,
+      y: canvas.height - 200,
+      width: 800,
+      height: 50,
+      color: "blue",
+    },
+    {
+      x: canvas.width * 1 + 350,
+      y: canvas.height - 350,
       width: 50,
       height: 50,
       color: "blue",
@@ -80,14 +122,6 @@ export function initializeWalls(walls, canvas) {
       height: 100,
       color: "red",
     },
-    {
-      x: canvas.width * 1 + 150 ,
-      y: canvas.height - 300,
-      width: 50,
-      height: 300,
-      color: "red",
-    },
-
   ];
   wallParams.forEach((params) =>
     walls.push(

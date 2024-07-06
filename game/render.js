@@ -1,16 +1,33 @@
-import { renderIfInView } from './helpers.js';
+import { renderIfInView } from "./helpers.js";
 
-export function render(ctx, canvas, player, enemies, laserEnemy, portal, greenCross, walls, projectiles, scrollOffset) {
+export function render(
+  ctx,
+  canvas,
+  player,
+  enemies,
+  laserEnemies,
+  portal,
+  greenCrosses,
+  walls,
+  projectiles,
+  scrollOffset
+) {
   const viewport = { width: canvas.width, height: canvas.height };
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
   ctx.translate(-scrollOffset, 0);
-  
-  enemies.forEach((enemy) => renderIfInView(enemy, ctx, viewport, scrollOffset));
-  laserEnemy.render(ctx, player);
+
+  enemies.forEach((enemy) =>
+    renderIfInView(enemy, ctx, viewport, scrollOffset)
+  );
+  laserEnemies.forEach((laserEnemy) =>
+    laserEnemy.render(ctx, player)
+  );
   portal.render(ctx);
-  greenCross.render(ctx);
+  greenCrosses.forEach((greenCross) =>
+    renderIfInView(greenCross, ctx, viewport, scrollOffset)
+  );
   walls.forEach((wall) => renderIfInView(wall, ctx, viewport, scrollOffset));
   projectiles.forEach((projectile) => {
     renderIfInView(projectile, ctx, viewport, scrollOffset);

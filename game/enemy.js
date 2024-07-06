@@ -51,6 +51,23 @@ export function initializeEnemies(enemies, canvas) {
       dx: 0,
       dy: 1,
     },
+    {
+      x: canvas.width * 1 + 300,
+      y: canvas.height - 350,
+      width: 50,
+      height: 50,
+      shootingInterval: 2000,
+      dx: -1,
+      dy: 0,
+    },    {
+      x: canvas.width * 1 + 500,
+      y: canvas.height - 400,
+      width: 50,
+      height: 50,
+      shootingInterval: 2000,
+      dx: -1,
+      dy: 0,
+    },
     // Ajoutez d'autres ennemis si nécessaire
   ];
 

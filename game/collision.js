@@ -1,4 +1,4 @@
-export function detectCollisions(player, projectiles, greenCross) {
+export function detectCollisions(player, projectiles, greenCrosses) {
   projectiles.forEach((projectile, index) => {
     if (projectile.checkCollision(player)) {
       projectiles.splice(index, 1);
@@ -9,10 +9,12 @@ export function detectCollisions(player, projectiles, greenCross) {
     }
   });
 
-  // Détecte la collision entre le joueur et la croix verte
-  if (greenCross && greenCross.checkCollision(player)) {
-    greenCross.collect(player);
-  }
+  // Détecte la collision entre le joueur et les croix vertes
+  greenCrosses.forEach((greenCross) => {
+    if (greenCross.checkCollision(player)) {
+      greenCross.collect(player);
+    }
+  });
 }
 
 function gameOver() {

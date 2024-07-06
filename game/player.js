@@ -7,7 +7,7 @@ export class Player extends GameObject {
     super(startX, startY, 50, 50, color);
     this.speed = 5; // Vitesse de déplacement du joueur
     this.jumpPower = 6; // Puissance du saut
-    this.gravity = 0.3; // Gravité appliquée au joueur
+    this.gravity = 0.25; // Gravité appliquée au joueur
     this.vy = 0; // Vitesse verticale
     this.isJumping = false; // Indique si le joueur est en train de sauter
     this.maxJumps = 2; // Autorise le double saut
