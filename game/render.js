@@ -1,25 +1,25 @@
 import { renderIfInView } from './helpers.js';
 
-export function render(ctx, canvas, player, enemy, laserEnemy, portal, greenCross, walls, projectiles, scrollOffset) {
+export function render(ctx, canvas, player, enemies, laserEnemy, portal, greenCross, walls, projectiles, scrollOffset) {
   const viewport = { width: canvas.width, height: canvas.height };
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
   ctx.translate(-scrollOffset, 0);
   
-  renderIfInView(enemy, ctx, viewport, scrollOffset);
-  laserEnemy.render(ctx, player); // Toujours rendre le laserEnemy
+  enemies.forEach((enemy) => renderIfInView(enemy, ctx, viewport, scrollOffset));
+  laserEnemy.render(ctx, player);
   portal.render(ctx);
-  greenCross.render(ctx); // Toujours rendre la croix verte
+  greenCross.render(ctx);
   walls.forEach((wall) => renderIfInView(wall, ctx, viewport, scrollOffset));
-  projectiles.forEach((projectile) => renderIfInView(projectile, ctx, viewport, scrollOffset));
+  projectiles.forEach((projectile) => {
+    renderIfInView(projectile, ctx, viewport, scrollOffset);
+  });
 
-  // Toujours rendre le joueur
   player.render(ctx);
 
   ctx.restore();
 
-  // Affiche la barre de vie du joueur en haut à droite de l'écran
   player.renderHP(ctx, canvas.width);
 
   if (player.isNear(portal)) {

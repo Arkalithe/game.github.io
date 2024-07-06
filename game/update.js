@@ -2,30 +2,30 @@ import { detectCollisions } from './collision.js';
 import { handleScrolling } from './scrolling.js';
 import { isInView } from './helpers.js';
 
-export function update(player, enemy, laserEnemy, projectiles, walls, keys, canvas, greenCross) {
+export function update(player, enemies, laserEnemy, projectiles, walls, keys, canvas, greenCross) {
   if (!window.isGameOver) {
     const viewport = { width: canvas.width, height: canvas.height };
 
-    // Toujours mettre à jour le joueur
     player.updatePosition(keys, canvas.width, canvas.height, [
       ...walls,
-      enemy,
+      ...enemies,
       laserEnemy,
     ]);
+
+    enemies.forEach((enemy) => {
+      enemy.update(projectiles); // Mettre à jour chaque ennemi indépendamment de leur visibilité
+    });
 
     if (isInView(laserEnemy, viewport, player.scrollOffset)) {
       laserEnemy.update(player, projectiles);
     }
 
     projectiles.forEach((projectile, index) => {
-      if (isInView(projectile, viewport, player.scrollOffset)) {
-        projectile.update();
-      }
-
+      projectile.update(); // Mettre à jour tous les projectiles indépendamment de leur visibilité
       if (
-        projectile.x > canvas.width ||
+        projectile.x > canvas.width + player.scrollOffset ||  // Correction des limites de l'écran
         projectile.y > canvas.height ||
-        projectile.x < 0 ||
+        projectile.x < player.scrollOffset ||  // Correction des limites de l'écran
         projectile.y < 0 ||
         walls.some((wall) => wall.checkCollision(projectile))
       ) {

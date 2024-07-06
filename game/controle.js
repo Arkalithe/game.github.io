@@ -18,31 +18,30 @@ export class Controle {
   // Gestion des touches pressées
   keyDownHandler(e) {
     this.keys[e.key.toLowerCase()] = true;
-
+  
     // Gestion du saut et du double saut
-    if (
-      e.key === " " &&
-      this.player &&
-      this.player.jumpCount < this.player.maxJumps
-    ) {
+    if (e.key === " " && this.player && this.player.jumpCount < this.player.maxJumps) {
       this.player.vy = -this.player.jumpPower;
       this.player.jumpCount++;
       this.player.isJumping = true;
     }
-
+  
     // Gestion du redémarrage du jeu en appuyant sur 'R'
     if (e.key.toLowerCase() === "r" && window.isGameOver) {
       window.restartGame();
     }
-
+  
     // Gestion de la fin du niveau en appuyant sur 'E' si le joueur est à l'intérieur du portail
-    if (
-      e.key.toLowerCase() === "e" &&
-      this.player &&
-      this.portal &&
-      this.player.isInside(this.portal)
-    ) {
-      window.endLevel();
+    if (e.key.toLowerCase() === "e") {
+      if (this.player && this.portal) {
+
+        if (this.player.isInside(this.portal)) {
+
+          window.endLevel();
+        } else {
+
+        }
+      }
     }
   }
 
