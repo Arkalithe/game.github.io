@@ -7,6 +7,7 @@ import { Controle } from "./controle.js";
 import { GreenCross, initializeGreenCrosses } from "./greenCross.js";
 import { update } from "./update.js";
 import { render } from "./render.js";
+import { initializeMessages } from "./message.js";
 
 export let keys = {}; // Définir la variable keys
 
@@ -18,6 +19,7 @@ let laserEnemies = [];
 let walls = [];
 let projectiles = [];
 let greenCrosses = []; // Change greenCross to greenCrosses
+const messages = [];
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -37,12 +39,13 @@ function resizeCanvas() {
   canvas.height = 700;
   if (!player) {
     player = new Player(canvas.width, canvas.height);
-    player.scrollOffset = 0; // Initialiser scrollOffset
+    player.scrollOffset = 0; 
     portal = new Portal(canvas.width * 2, canvas.height - 100);
     initializeWalls(walls, canvas);
     initializeEnemies(enemies, canvas);
     initializeLaserEnemies(laserEnemies, canvas);
-    initializeGreenCrosses(greenCrosses, canvas); // Initialize GreenCrosses here
+    initializeGreenCrosses(greenCrosses, canvas); 
+    initializeMessages(messages, canvas)
   }
 }
 
@@ -61,7 +64,8 @@ export function restartGame() {
   initializeWalls(walls, canvas);
   initializeEnemies(enemies, canvas);
   initializeLaserEnemies(laserEnemies, canvas);
-  initializeGreenCrosses(greenCrosses, canvas); // Initialize GreenCrosses here
+  initializeGreenCrosses(greenCrosses, canvas); 
+  initializeMessages(messages, canvas)
   projectiles = [];
   player.jumpCount = 0; // Réinitialiser le compteur de sauts
   controle.updatePlayerAndPortal(player, portal); // Mettre à jour le joueur et le portail dans la classe Controle
@@ -72,7 +76,7 @@ window.restartGame = restartGame;
 
 function gameLoop() {
   update(player, enemies, laserEnemies, projectiles, walls, keys, canvas, greenCrosses);
-  render(ctx, canvas, player, enemies, laserEnemies, portal, greenCrosses, walls, projectiles, player.scrollOffset);
+  render(ctx, canvas, player, enemies, laserEnemies, portal, greenCrosses, walls, projectiles, messages, player.scrollOffset);
   if (!window.isGameOver) {
     window.animationFrameId = requestAnimationFrame(gameLoop);
   }

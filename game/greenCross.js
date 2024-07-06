@@ -37,7 +37,7 @@ export class GreenCross extends GameObject {
 
 export function initializeGreenCrosses(greenCrosses, canvas) {
   const greenCrossParams = [
-    { x: canvas.width / 2 - 150, y: canvas.height -50 },
+    { x: canvas.width / 2 +  700, y: canvas.height -50 },
     { x: canvas.width / 1 + 300, y: canvas.height - 150 },
     // Ajoutez d'autres GreenCross si nécessaire
   ];
