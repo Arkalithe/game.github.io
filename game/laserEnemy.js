@@ -4,7 +4,7 @@ import { LaserProjectile } from "./projectile.js";
 export class LaserEnemy extends GameObject {
   constructor(canvasWidth, canvasHeight) {
     super(canvasWidth, canvasHeight, 50, 50, "purple");
-    this.shootingInterval = 3000; // Intervalle de tir en millisecondes
+    this.shootingInterval = 1500; // Intervalle de tir en millisecondes
     this.aimingTime = 1000; // Temps de visée avant de tirer
     this.isAiming = false;
     this.targetPlayer = null;
@@ -58,8 +58,8 @@ export class LaserEnemy extends GameObject {
 
  export function initializeLaserEnemies(laserEnemies, canvas) {
     const laserEnemyParams = [
-      { x: canvas.width * 1 + 600, y: canvas.height - 350, width: 50, height: 50, shootingInterval: 3000, aimingTime: 1000 },
-      { x: canvas.width * 1 + 400, y: canvas.height - 300, width: 50, height: 50, shootingInterval: 3000, aimingTime: 1000 },
+      { x: canvas.width * 1 + 600, y: canvas.height - 350, width: 50, height: 50, shootingInterval: 1000, aimingTime: 1000 },
+      { x: canvas.width * 1 + 400, y: canvas.height - 300, width: 50, height: 50, shootingInterval: 1000, aimingTime: 1000 },
     ];
   
     laserEnemyParams.forEach((params) => {
